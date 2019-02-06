@@ -24,7 +24,7 @@ class RSA:
 
         d = self._bezout_recursive(e, oiler)[0]
         if d < 0:
-            d = oiler + d
+            d += oiler
 
         self.modulus, self.exponent = n, e
         self._secret = d
@@ -32,7 +32,6 @@ class RSA:
     def encrypt(self, text):
         value = self._text_to_value(text)
         encrypted = pow(value, self.exponent, self.modulus)
-        # hex(encrypted)[2:]
         return format(encrypted, 'x')
 
     def decrypt(self, text):
@@ -42,7 +41,7 @@ class RSA:
     def sign(self, text):
         value = self._text_to_value(text)
         encrypted = pow(value, self._secret, self.modulus)
-        return hex(encrypted)[2:]
+        return format(encrypted, 'x')
 
     @staticmethod
     def verify(modulus, exponent, message, signature):
@@ -51,18 +50,18 @@ class RSA:
 
     def send_key(self, modulus, exponent):
         while modulus < self.modulus:
-            length = len(bin(modulus)[2:]) / 2 - 1
+            length = len(format(modulus, 'b')) / 2 - 1
             self.generate_rsa_keys(length)
         k = random.randint(1, self.modulus)
         k1 = pow(k, exponent, modulus)
         s = pow(k, self._secret, self.modulus)
         s1 = pow(s, exponent, modulus)
-        return hex(k1)[2:], hex(s1)[2:]
+        return format(k1, 'x'), format(s1, 'x')
 
     def receive_key(self, modulus, exponent, key, signature):
         k = pow(key, self._secret, self.modulus)
         s = pow(signature, self._secret, self.modulus)
-        return hex(k)[2:], True if k == pow(s, exponent, modulus) else False
+        return format(k, 'x'), True if k == pow(s, exponent, modulus) else False
 
     @property
     def secret(self):
@@ -75,7 +74,7 @@ class RSA:
 
     @staticmethod
     def _value_to_text(value):
-        number = hex(value)[2:]
+        number = format(value, 'x')
         represented = bytes(number, 'utf-8')
         result = binascii.unhexlify(represented)
         return result.decode('utf-8')
@@ -94,9 +93,8 @@ class RSA:
     @staticmethod
     def _gcd(a, b):
         if a < 0:
-            tmp = str(a)
-            a = int(tmp[1:])
-        while a != 0 and b != 0:
+            a = abs(a)
+        while a and b != 0:
             if a > b:
                 a -= b
             else:
@@ -104,7 +102,7 @@ class RSA:
         return a if a != 0 else b
 
     @staticmethod
-    def _pascal(n, limit=256):
+    def _pascal(n, limit=128):
         eratos = [i for i in range(2, limit + 1)]
         for i in eratos:
             if i in eratos:
@@ -146,6 +144,7 @@ class RSA:
 
     @staticmethod
     def _bezout_recursive(a, b):
+        # TODO: fix max recursion error for 2048+ keys
         if not b:
             return 1, 0, a
         y, x, g = RSA._bezout_recursive(b, a % b)
@@ -154,6 +153,6 @@ class RSA:
     @staticmethod
     def _to_int(**kwargs):
         for key, value in kwargs.items():
-            new_value = int('0x' + value, 16)
+            new_value = int(''.join(('0x', value)), 16)
             kwargs[key] = new_value
         return kwargs
