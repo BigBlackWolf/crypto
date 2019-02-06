@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+</head>
+<style>
+    body {
+        background-image: url(../static/connectwork.png);
+    }
+</style>
+<body>
+<nav class="navbar navbar-inverse lead">
+    <div class="container">
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('generate') }}">RSA<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cesar</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 id="test">Crypto</h2>
+</div>
+<div class="container">
+    <div class="col-xs-2">
+        <ul class="nav nav-pills nav-stacked" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('generate') }}" class="nav-link" role="tab" id="generate">Generate key</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('encrypt') }}" class="nav-link" role="tab" id="encrypt">Encrypt</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('decrypt') }}" class="nav-link" role="tab">Decrypt</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('signature') }}" class="nav-link" role="tab">Signature</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('verify') }}" class="nav-link" role="tab">Verify</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('send') }}" class="nav-link" role="tab">Send Key</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a href="{{ url_for('receive') }}" class="nav-link" role="tab">Receive Key</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xs-9 col-xs-offset-1">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+<footer class="footer navbar-fixed-bottom">
+    <div class="container-fluid text-center">
+        <p class="text-muted">Created by Stepan Rasputny © 2019</p>
+    </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block content %}
+<span class="h2">Encrypt</span>
+<div class="panel panel-default">
+    <div class="panel-body">
+        {% from "_formhelpers.html" import render_field %}
+        <form method="post">
+            <button class="btn btn-default" type="reset"><span class="glyphicon glyphicon-remove-circle"></span> Clear
+            </button>
+            <div class="form-group">
+                {{ form.csrf_token }}
+                {{ render_field(form.modulus) }}
+                {{ render_field(form.exponent) }}
+                {{ render_field(form.message) }}
+            </div>
+            <div class="col-sm-2">
+                <input class="btn btn-success form-control" type="submit" value="Encrypt">
+            </div>
+            {% if encrypted %}
+            <hr>
+            <div class="input-group">
+                <span class="input-group-addon">Encrypted</span>
+                <input class="form-control" value="{{ encrypted|safe }}" type="text">
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

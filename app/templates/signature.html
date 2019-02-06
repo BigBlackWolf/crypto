@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block content %}
+<span class="h2">Signature</span>
+<div class="panel panel-default">
+    <div class="panel-body">
+        {% from "_formhelpers.html" import render_field %}
+        <form method="post">
+            <button class="btn btn-default" type="reset"><span class="glyphicon glyphicon-remove-circle"></span> Clear
+            </button>
+            <div class="form-group">
+                {{ form.csrf_token }}
+                {{ render_field(form.message) }}
+            </div>
+            <div class="col-sm-2">
+                <input class="btn btn-success form-control" type="submit" value="Create">
+            </div>
+            {% if signature %}
+            <hr>
+            <div class="input-group">
+                <span class="input-group-addon">Signature</span>
+                <input class="form-control" value="{{ signature|safe }}" type="text">
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
