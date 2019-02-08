@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from flask import render_template, make_response
+from flask import render_template, make_response, jsonify
 from flask import request
 import logging
 
@@ -174,3 +174,9 @@ class ReceiveHandler(MethodView):
             key, verification = receiver.receive_key(**transformed)
             return render_template(self.template, form=form, key=key, verification=verification)
         return render_template(self.template, form=form)
+
+
+class APIView(MethodView):
+    def get(self):
+        response = {'number': 2}
+        return jsonify(response)

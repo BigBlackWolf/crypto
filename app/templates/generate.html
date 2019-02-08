@@ -5,10 +5,10 @@
     <div class="panel-body">
         {% from "_formhelpers.html" import render_field %}
         <form method=post>
-            <button class="btn btn-default" type="reset"><span class="glyphicon glyphicon-remove-circle"></span> Clear
+            <button class="btn btn-default" type="reset">
+                <span class="glyphicon glyphicon-remove-circle"></span> Clear
             </button>
             <div class="form-group">
-                {{ form.csrf_token }}
                 {{ render_field(form.length) }}
             </div>
             <div class="row">

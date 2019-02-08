@@ -3,7 +3,7 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True
-CSRF_ENABLED = True
+WTF_CSRF_ENABLED = False
 SECRET_KEY = 'this-really-needs-to-be-changed'
 
 DATABASE = {
