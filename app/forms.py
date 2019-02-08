@@ -16,7 +16,7 @@ class EncryptForm(FlaskForm):
 
 
 class DecryptForm(FlaskForm):
-    ciphertext = StringField(validators=[validators.Length(min=1, max=1024)])
+    ciphertext = StringField(validators=[validators.Regexp(hex_regexp)])
 
 
 class SignatureForm(FlaskForm):

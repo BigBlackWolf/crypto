@@ -50,7 +50,7 @@ class RSA:
 
     def send_key(self, modulus, exponent):
         while modulus < self.modulus:
-            length = len(format(modulus, 'b')) / 2 - 1
+            length = round(len(format(modulus, 'b')) / 2) - 1
             self.generate_rsa_keys(length)
         k = random.randint(1, self.modulus)
         k1 = pow(k, exponent, modulus)

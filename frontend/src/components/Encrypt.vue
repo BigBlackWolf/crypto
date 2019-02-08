@@ -1,7 +1,7 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <form method=post>
+      <form @submit="onSubmit">
         <button class="btn btn-default" type="reset">
           <span class="glyphicon glyphicon-remove-circle"></span> Clear
         </button>
@@ -9,7 +9,7 @@
           <div class="row">
             <label class="col-sm-2 control-label"><label for="exponent">Modulus</label></label>
             <div class="col-sm-10">
-              <input class="form-control" type="text" id="modulus" name="modulus">
+              <input class="form-control" type="text" id="modulus" name="modulus" v-model="modulus">
             </div>
           </div>
         </div>
@@ -17,7 +17,7 @@
           <div class="row">
             <label class="col-sm-2 control-label"><label for="exponent">Exponent</label></label>
             <div class="col-sm-10">
-              <input class="form-control" type="text" id="exponent" name="exponent">
+              <input class="form-control" type="text" id="exponent" name="exponent" v-model="exponent">
             </div>
           </div>
         </div>
@@ -25,24 +25,22 @@
           <div class="row">
             <label class="col-sm-2 control-label"><label for="message">Message</label></label>
             <div class="col-sm-10">
-              <input class="form-control" type="text" id="message" name="message">
+              <input class="form-control" type="text" id="message" name="message" v-model="message">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-2 col-sm-offset-2">
-            <input class="btn btn-success form-control" type="submit" value="Encrypt">
+            <input class="btn btn-success form-control" value="Encrypt" @click="onSubmit">
           </div>
         </div>
       </form>
-      <hr>
-      <div class="input-group">
-        <span class="input-group-addon">Modulus</span>
-        <input class="form-control" type="text">
-      </div>
-      <div class="input-group">
-        <span class="input-group-addon">Exponent</span>
-        <input class="form-control" type="text">
+      <div v-show="encrypted !== null">
+        <hr>
+        <div class="input-group">
+          <span class="input-group-addon">Encrypted</span>
+          <input class="form-control" type="text" :value="encrypted">
+        </div>
       </div>
     </div>
   </div>
@@ -54,23 +52,36 @@
   export default {
     data() {
       return {
-        randomNumber: null
+        encrypted: null,
       }
     },
     methods: {
-      getRandom() {
-        const path = 'http://127.0.0.1:5000/api/random'
-        axios.get(path)
+      onSubmit(evt) {
+        evt.preventDefault();
+        const payload = {
+          form: {
+            modulus: this.modulus,
+            exponent: this.exponent,
+            message: this.message
+          },
+          userStuff: {
+            modulus: sessionStorage.getItem('modulus'),
+            exponent: sessionStorage.getItem('exponent'),
+            secret: sessionStorage.getItem('secret')
+          }
+        };
+        this.getRandom(payload);
+      },
+      getRandom(data) {
+        const path = 'http://127.0.0.1:5000/api/encrypt';
+        axios.post(path, data)
           .then(response => {
-            this.randomNumber = response.data.number
+            this.encrypted = response.data.encrypted;
           })
           .catch(error => {
             console.log(error)
           })
       }
-    },
-    created() {
-      this.getRandom()
     }
   }
 </script>
