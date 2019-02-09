@@ -5,10 +5,8 @@ __pycache__/
 venv/
 .idea/
 .DS_Store
+**/dist
 
 node_modules/
 npm-debug.log*
-package-lock.json
-.eslintrc.js
-.eslintignore
 .editorconfig
