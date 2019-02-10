@@ -10,10 +10,10 @@
       }
     },
     "rules": {
-        "vue/max-attributes-per-line": "warn",
-        "vue/attributes-order": "warn",
-        "no-console": "warn",
-        "vue/html-self-closing": "warn"
+        "vue/max-attributes-per-line": "off",
+        "vue/attributes-order": "off",
+        "no-console": "off",
+        "vue/html-self-closing": "off"
     },
     "extends": [
         "plugin:vue/recommended"
