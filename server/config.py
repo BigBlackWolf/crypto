@@ -11,7 +11,7 @@ DATABASE = {
     'database': 'aiohttp_crypto',
     'user': 'crypto_user',
     'password': 'crypto_user',
-    'host': 'localhost',
+    'host': 'db',
     'port': '5432',
     'minsize': 1,
     'maxsize': 5
