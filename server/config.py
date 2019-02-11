@@ -4,15 +4,15 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True
 WTF_CSRF_ENABLED = False
-SECRET_KEY = 'this-really-needs-to-be-changed'
+SECRET_KEY = os.getenv('SECRET_KEY') or 'this-really-needs-to-be-changed'
 
 DATABASE = {
     'engine': 'postgresql',
-    'database': 'aiohttp_crypto',
-    'user': 'crypto_user',
-    'password': 'crypto_user',
-    'host': 'db',
-    'port': '5432',
+    'database': os.getenv('POSTGRES_DB') or 'aiohttp_crypto',
+    'user': os.getenv('POSTGRES_USER') or 'crypto_user',
+    'password': os.getenv('POSTGRES_PASSWORD') or 'crypto_user',
+    'host': os.getenv('POSTGRES_HOST') or 'localhost',
+    'port': os.getenv('POSTGRES_PORT') or '5432',
     'minsize': 1,
     'maxsize': 5
 }
