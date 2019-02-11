@@ -4,7 +4,7 @@ from functools import reduce
 
 
 class RSA:
-    def __init__(self, length=None, modulus=None, exponent=None, secret=None):
+    def __init__(self, length: int=None, modulus: int=None, exponent: int=None, secret: int=None):
         if length or not any((modulus, exponent, secret, length)):
             self.generate_rsa_keys(length)
         else:
@@ -12,7 +12,7 @@ class RSA:
             self.exponent = exponent
             self._secret = secret
 
-    def generate_rsa_keys(self, length):
+    def generate_rsa_keys(self, length: int):
         p = self._easy_number(length)
         q = self._easy_number(length)
         n = q * p
@@ -29,26 +29,28 @@ class RSA:
         self.modulus, self.exponent = n, e
         self._secret = d
 
-    def encrypt(self, text):
-        value = self._text_to_value(text)
-        encrypted = pow(value, self.exponent, self.modulus)
+    @staticmethod
+    def encrypt(message: str, exponent: int, modulus: int) -> str:
+        new_message = RSA._text_to_value(message)
+        encrypted = pow(*new_message, exponent, modulus)
         return format(encrypted, 'x')
 
-    def decrypt(self, text):
-        text = pow(text, self._secret, self.modulus)
+    def decrypt(self, text: str) -> str:
+        dict_text = self._hex_to_int(text=text)
+        text = pow(dict_text['text'], self._secret, self.modulus)
         return self._value_to_text(text)
 
-    def sign(self, text):
+    def sign(self, text: str) -> str:
         value = self._text_to_value(text)
-        encrypted = pow(value, self._secret, self.modulus)
+        encrypted = pow(*value, self._secret, self.modulus)
         return format(encrypted, 'x')
 
     @staticmethod
-    def verify(modulus, exponent, message, signature):
+    def verify(modulus: int, exponent: int, message: str, signature: int) -> bool:
         to_check = RSA._text_to_value(message)
-        return True if pow(signature, exponent, modulus) == to_check else False
+        return True if pow(signature, exponent, modulus) == next(to_check) else False
 
-    def send_key(self, modulus, exponent):
+    def send_key(self, modulus: int, exponent: int) -> (str, str):
         while modulus < self.modulus:
             length = round(len(format(modulus, 'b')) / 2) - 1
             self.generate_rsa_keys(length)
@@ -58,29 +60,30 @@ class RSA:
         s1 = pow(s, exponent, modulus)
         return format(k1, 'x'), format(s1, 'x')
 
-    def receive_key(self, modulus, exponent, key, signature):
+    def receive_key(self, modulus: int, exponent: int, key: int, signature: int) -> (str, bool):
         k = pow(key, self._secret, self.modulus)
         s = pow(signature, self._secret, self.modulus)
         return format(k, 'x'), True if k == pow(s, exponent, modulus) else False
 
     @property
-    def secret(self):
+    def secret(self) -> int:
         return self._secret
 
     @staticmethod
-    def _text_to_value(text):
-        tmp = binascii.hexlify(bytes(text, 'utf-8'))
-        return int(tmp, 16)
+    def _text_to_value(*args):
+        result = [binascii.hexlify(bytes(item, 'utf-8')) for item in args]
+        result2 = map(lambda x: int(x, 16), result)
+        return result2
 
     @staticmethod
-    def _value_to_text(value):
+    def _value_to_text(value: int) -> str:
         number = format(value, 'x')
         represented = bytes(number, 'utf-8')
         result = binascii.unhexlify(represented)
         return result.decode('utf-8')
 
     @staticmethod
-    def _easy_number(n0=None):
+    def _easy_number(n0: int=None) -> int:
         if n0 is None:
             n0 = 128
         while True:
@@ -91,7 +94,7 @@ class RSA:
         return test
 
     @staticmethod
-    def _gcd(a, b):
+    def _gcd(a: int, b: int) -> int:
         if a < 0:
             a = abs(a)
         while a and b != 0:
@@ -102,7 +105,7 @@ class RSA:
         return a if a != 0 else b
 
     @staticmethod
-    def _pascal(n, limit=128):
+    def _pascal(n: int, limit: int=128) -> bool:
         eratos = [i for i in range(2, limit + 1)]
         for i in eratos:
             if i in eratos:
@@ -121,7 +124,7 @@ class RSA:
         return True
 
     @staticmethod
-    def _miller_test(p):
+    def _miller_test(p: int) -> bool:
         d = p - 1
         s = 0
         while d % 2 == 0:
@@ -143,7 +146,7 @@ class RSA:
         return True
 
     @staticmethod
-    def _bezout_recursive(a, b):
+    def _bezout_recursive(a: int, b: int) -> (int, int, int):
         # TODO: fix max recursion error for 2048+ keys
         if not b:
             return 1, 0, a
@@ -151,7 +154,7 @@ class RSA:
         return x, y - (a // b) * x, g
 
     @staticmethod
-    def _to_int(**kwargs):
+    def _hex_to_int(**kwargs) -> dict:
         for key, value in kwargs.items():
             new_value = int(''.join(('0x', value)), 16)
             kwargs[key] = new_value
