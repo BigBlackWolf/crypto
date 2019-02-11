@@ -27,11 +27,11 @@
           </div>
         </div>
       </form>
-      <div v-show="key !== null">
+      <div v-show="sign_key !== null">
         <hr>
         <div class="input-group">
           <span class="input-group-addon">Key</span>
-          <input class="form-control" type="text" :value="key">
+          <input class="form-control" type="text" :value="sign_key">
         </div>
         <div class="input-group">
           <span class="input-group-addon">Signature</span>
@@ -48,7 +48,7 @@
   export default {
     data() {
       return {
-        key: null,
+        sign_key: null,
         signature: null
       }
     },
@@ -72,12 +72,20 @@
         const path = 'http://127.0.0.1:5000/api/send';
         axios.post(path, data)
           .then(response => {
-            this.key = response.data.key;
+            this.sign_key = response.data.key;
             this.signature = response.data.signature;
+            sessionStorage.setItem('sign_key', this.sign_key);
+            sessionStorage.setItem('signature', this.signature);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.key) {
+        this.sign_key = sessionStorage.sign_key;
+        this.signature = sessionStorage.signature;
       }
     }
   }

@@ -61,6 +61,8 @@
     data() {
       return {
         verified: null,
+        modulus: null,
+        exponent: null
       }
     },
     methods: {
@@ -72,11 +74,6 @@
             modulus: this.modulus,
             exponent: this.exponent,
             signature: this.signature
-          },
-          userStuff: {
-            modulus: sessionStorage.getItem('modulus'),
-            exponent: sessionStorage.getItem('exponent'),
-            secret: sessionStorage.getItem('secret')
           }
         };
         this.getRandom(payload);
@@ -86,10 +83,16 @@
         axios.post(path, data)
           .then(response => {
             this.verified = response.data.verified;
+            sessionStorage.setItem('verified', this.verified);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.verified) {
+        this.verified = sessionStorage.verified;
       }
     }
   }

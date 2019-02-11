@@ -59,10 +59,16 @@
         axios.post(path, data)
           .then(response => {
             this.signature = response.data.signature;
+            sessionStorage.setItem('signature', this.signature);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.signature) {
+        this.signature = sessionStorage.signature;
       }
     }
   }

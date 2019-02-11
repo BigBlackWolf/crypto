@@ -53,6 +53,8 @@
     data() {
       return {
         encrypted: null,
+        modulus: null,
+        exponent: null
       }
     },
     methods: {
@@ -64,11 +66,6 @@
             exponent: this.exponent,
             message: this.message
           },
-          userStuff: {
-            modulus: sessionStorage.getItem('modulus'),
-            exponent: sessionStorage.getItem('exponent'),
-            secret: sessionStorage.getItem('secret')
-          }
         };
         this.getRandom(payload);
       },
@@ -77,10 +74,16 @@
         axios.post(path, data)
           .then(response => {
             this.encrypted = response.data.encrypted;
+            sessionStorage.setItem('encrypted', this.encrypted);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.modulus && sessionStorage.encrypted) {
+        this.encrypted = sessionStorage.encrypted;
       }
     }
   }

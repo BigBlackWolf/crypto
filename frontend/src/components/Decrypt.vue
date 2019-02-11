@@ -59,10 +59,16 @@
         axios.post(path, data)
           .then(response => {
             this.decrypted = response.data.decrypted;
+            sessionStorage.setItem('decrypted', this.decrypted);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.decrypted) {
+        this.decrypted = sessionStorage.decrypted;
       }
     }
   }

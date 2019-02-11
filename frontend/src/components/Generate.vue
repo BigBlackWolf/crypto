@@ -51,17 +51,12 @@
         const payload = {
           form: {
             length: this.length
-          },
-          userStuff: {
-            modulus: sessionStorage.getItem('modulus'),
-            exponent: sessionStorage.getItem('exponent'),
-            secret: sessionStorage.getItem('secret')
           }
         };
         this.getRandom(payload);
       },
       getRandom(data) {
-        const path = 'http://127.0.0.1:5000/api/random';
+        const path = 'http://127.0.0.1:5000/api/generate';
         axios.post(path, data)
           .then(response => {
             this.modulus = response.data.modulus;
@@ -73,6 +68,12 @@
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.modulus) {
+        this.modulus = sessionStorage.modulus;
+        this.exponent = sessionStorage.exponent;
       }
     }
   }

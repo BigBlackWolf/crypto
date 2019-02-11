@@ -51,7 +51,7 @@
         </div>
         <div class="input-group">
           <span class="input-group-addon">Verified</span>
-          <input class="form-control" type="text" :value="verified">
+          <input class="form-control" type="text" :value="verified2">
         </div>
       </div>
     </div>
@@ -64,7 +64,7 @@
   export default {
     data() {
       return {
-        verified: null,
+        verified2: null,
         key2: null
       }
     },
@@ -91,11 +91,19 @@
         axios.post(path, data)
           .then(response => {
             this.key2 = response.data.key;
-            this.verified = response.data.signature;
+            this.verified2 = response.data.signature;
+            sessionStorage.setItem('key2', this.key2);
+            sessionStorage.setItem('verified2', this.verified2);
           })
           .catch(error => {
             console.log(error)
           })
+      }
+    },
+    mounted () {
+      if (sessionStorage.key) {
+        this.key2 = sessionStorage.key2;
+        this.verified2 = sessionStorage.verified2;
       }
     }
   }
