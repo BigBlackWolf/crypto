@@ -15,6 +15,8 @@ Frontend should be serving at `127.0.0.1:8080`
 
 Server should be at `127.0.0.1:5000`
 
+Hot-reload also works
+
 ## Build without Docker
 
 Requires [python 3.6](https://www.python.org/downloads/) or higher,
@@ -65,3 +67,7 @@ And then reup your docker-compose or (in case of native setup) run
 ```bash
 python run.py db upgrade
 ```
+
+## Logs
+
+Server logs should be written to `server/app.log` even with Docker setup
