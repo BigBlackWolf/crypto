@@ -71,9 +71,9 @@ class RSA:
 
     @staticmethod
     def _text_to_value(*args):
-        result = [binascii.hexlify(bytes(item, 'utf-8')) for item in args]
-        result2 = map(lambda x: int(x, 16), result)
-        return result2
+        hexed = [binascii.hexlify(bytes(item, 'utf-8')) for item in args]
+        result = map(lambda x: int(x, 16), hexed)
+        return result
 
     @staticmethod
     def _value_to_text(value: int) -> str:
