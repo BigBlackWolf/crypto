@@ -5,13 +5,12 @@ import logging
 from app.rsa import RSA
 from app import forms
 from app.models import RSAKeys, Users
-from app.extensions import db, cache
+from app.extensions import db
 
 
 class GenerateHandler(MethodView):
     template = 'generate.html'
 
-    @cache.cached(timeout=50)
     def get(self):
         form = forms.GenerateKeyForm(request.form)
         response = make_response(render_template(self.template, form=form))

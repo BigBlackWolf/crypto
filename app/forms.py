@@ -2,6 +2,7 @@ from wtforms import IntegerField, validators, StringField
 from flask_wtf import FlaskForm
 import re
 
+# Regular expression to validate hex number
 hex_regexp = re.compile('[0-9a-fA-F]+')
 
 
