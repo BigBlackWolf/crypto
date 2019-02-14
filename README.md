@@ -1,13 +1,13 @@
 # Crypto
 
-###Description
+### Description
 My pet project, here I am making crypto algorithms with web-interface.
 In first version was released RSA encoding with Vue.js web interface
 
 
-###Installation
+### Installation
 
-#####Requirements:
+##### Requirements:
 * Python 3.6+
 * Node.js 
 * Postgres 
@@ -23,7 +23,7 @@ $ npm run dev
 ```
 
 
-###Tech stack
+### Tech stack
 
 * Flask
 * Node.js
@@ -33,6 +33,6 @@ $ npm run dev
 * Postgres
 * SQLAlchemy
 
-###Licence
+### Licence
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
