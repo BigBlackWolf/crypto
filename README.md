@@ -1,5 +1,7 @@
 # Crypto
 
+[![Build Status](https://travis-ci.org/BigBlackWolf/crypto.svg?branch=master)](https://travis-ci.org/BigBlackWolf/crypto)
+
 ### Description
 My pet project, here I am making crypto algorithms with web-interface.
 In first version was released RSA encoding with Vue.js web interface
