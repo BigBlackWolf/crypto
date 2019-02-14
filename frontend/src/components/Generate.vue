@@ -1,7 +1,7 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <form @submit="onSubmit">
+      <form>
         <button class="btn btn-default" type="reset">
           <span class="glyphicon glyphicon-remove-circle"></span> Clear
         </button>
