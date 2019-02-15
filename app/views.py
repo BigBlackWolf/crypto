@@ -6,7 +6,6 @@ from app.rsa import RSA
 from app import forms
 from app.models import RSAKeys, Users
 from app.extensions import db
-from app.tasks import celery_generate
 
 
 class GenerateHandler(MethodView):
@@ -33,11 +32,11 @@ class GenerateHandler(MethodView):
                 modulus = result.module
                 exponent = result.public_exponent
             else:
-                task = celery_generate.delay(length)
-                rsa = task.wait()
-                modulus = rsa.get('module')
-                exponent = rsa.get('public_exponent')
-                keys = RSAKeys(key_size=length, user_id=user, **rsa)
+                rsa = RSA(length)
+                modulus = hex(rsa.modulus)[2:]
+                exponent = hex(rsa.exponent)[2:]
+                _secret = hex(rsa.secret)[2:]
+                keys = RSAKeys(key_size=length, module=modulus, public_exponent=exponent, secret=_secret, user_id=user)
                 db.session.add(keys)
                 db.session.commit()
             result = {'modulus': modulus, 'exponent': exponent}
@@ -58,9 +57,8 @@ class EncryptHandler(MethodView):
         form = forms.EncryptForm(request.form)
         if form.validate():
             variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data}
-            transformed = RSA._to_int(**variables)
-            rsa = RSA(**transformed)
-            encrypted = rsa.encrypt(form.message.data)
+            transformed = RSA._hex_to_int(**variables)
+            encrypted = RSA.encrypt(form.message.data, **transformed)
             return render_template(self.template, form=form, encrypted=encrypted)
         return render_template(self.template, form=form)
 
@@ -79,9 +77,9 @@ class DecryptHandler(MethodView):
         if form.validate():
             result = RSAKeys.query.filter_by(user_id=user, key_size=length)[0]
             variables = {'modulus': result.module, 'exponent': result.public_exponent, 'secret': result.secret}
-            transformed = RSA._to_int(**variables)
+            transformed = RSA._hex_to_int(**variables)
             rsa = RSA(**transformed)
-            number = RSA._to_int(text=form.ciphertext.data)
+            number = RSA._hex_to_int(text=form.ciphertext.data)
             decrypted = rsa.decrypt(**number)
             return render_template(self.template, form=form, decrypted=decrypted)
         return render_template(self.template, form=form)
@@ -101,7 +99,7 @@ class SignatureHandler(MethodView):
         if form.validate():
             result = RSAKeys.query.filter_by(user_id=user, key_size=length)[0]
             variables = {'modulus': result.module, 'exponent': result.public_exponent, 'secret': result.secret}
-            transformed = RSA._to_int(**variables)
+            transformed = RSA._hex_to_int(**variables)
             rsa = RSA(**transformed)
             signature = rsa.sign(form.message.data)
             return render_template(self.template, form=form, signature=signature)
@@ -119,7 +117,7 @@ class VerifyHandler(MethodView):
         form = forms.VerificationForm(request.form)
         if form.validate():
             variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data, 'signature': form.signature.data}
-            transformed = RSA._to_int(**variables)
+            transformed = RSA._hex_to_int(**variables)
             transformed['message'] = form.message.data
             verification = RSA.verify(**transformed)
             return render_template(self.template, form=form, verification=verification)
@@ -140,11 +138,11 @@ class SendHandler(MethodView):
         if form.validate():
             result = RSAKeys.query.filter_by(user_id=user, key_size=length)[0]
             parameters = {'modulus': result.module, 'exponent': result.public_exponent, 'secret': result.secret}
-            keys = RSA._to_int(**parameters)
+            keys = RSA._hex_to_int(**parameters)
             sender = RSA(**keys)
 
             variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data}
-            transformed = RSA._to_int(**variables)
+            transformed = RSA._hex_to_int(**variables)
             key, signature = sender.send_key(**transformed)
             return render_template(self.template, form=form, key=key, signature=signature)
         return render_template(self.template, form=form)
@@ -164,12 +162,12 @@ class ReceiveHandler(MethodView):
         if form.validate():
             result = RSAKeys.query.filter_by(user_id=user, key_size=length)[0]
             parameters = {'modulus': result.module, 'exponent': result.public_exponent, 'secret': result.secret}
-            keys = RSA._to_int(**parameters)
+            keys = RSA._hex_to_int(**parameters)
             receiver = RSA(**keys)
 
             variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data,
                          'signature': form.signature.data, 'key': form.key.data}
-            transformed = RSA._to_int(**variables)
+            transformed = RSA._hex_to_int(**variables)
             key, verification = receiver.receive_key(**transformed)
             return render_template(self.template, form=form, key=key, verification=verification)
         return render_template(self.template, form=form)

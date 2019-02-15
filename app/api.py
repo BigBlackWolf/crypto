@@ -1,7 +1,7 @@
 from werkzeug.datastructures import ImmutableMultiDict
 from flask import jsonify, request, Blueprint
 
-from app import forms
+from app import forms, tasks
 from app.rsa import RSA
 
 
@@ -16,10 +16,8 @@ def generate():
     response = {}
     if form.validate():
         length = form.length.data
-        rsa = RSA(length)
-        response = {'modulus': format(rsa.modulus, 'x'),
-                    'exponent': format(rsa.exponent, 'x'),
-                    'secret': format(rsa.secret, 'x')}
+        rsa = tasks.generate.delay(length)
+        response = rsa.wait()
     return jsonify(response)
 
 
@@ -30,9 +28,10 @@ def encrypt():
     form = forms.EncryptForm(test)
     response = {}
     if form.validate():
-        values = RSA._hex_to_int(exponent=form.exponent.data, modulus=form.modulus.data)
-        encrypted = RSA.encrypt(message=form.message.data, **values)
-        response['encrypted'] = encrypted
+        task = tasks.transform.delay(exponent=form.exponent.data, modulus=form.modulus.data)
+        values = task.wait()
+        task_encrypt = tasks.encrypt.delay(message=form.message.data, **values)
+        response = task_encrypt.wait()
     return jsonify(response)
 
 
@@ -43,10 +42,9 @@ def decrypt():
     form = forms.DecryptForm(test)
     response = {}
     if form.validate():
-        variables = {'modulus': data['userStuff']['modulus'],
-                     'exponent': data['userStuff']['exponent'],
-                     'secret': data['userStuff']['secret']}
-        transformed = RSA._hex_to_int(**variables)
+        variables = data['userStuff']
+        task = tasks.transform.delay(**variables)
+        transformed = task.wait()
         rsa = RSA(**transformed)
         decrypted = rsa.decrypt(form.ciphertext.data)
         response['decrypted'] = decrypted
@@ -60,10 +58,9 @@ def sign():
     form = forms.SignatureForm(test)
     response = {}
     if form.validate():
-        variables = {'modulus': data['userStuff']['modulus'],
-                     'exponent': data['userStuff']['exponent'],
-                     'secret': data['userStuff']['secret']}
-        transformed = RSA._hex_to_int(**variables)
+        variables = data['userStuff']
+        task = tasks.transform.delay(**variables)
+        transformed = task.wait()
         rsa = RSA(**transformed)
         signature = rsa.sign(form.message.data)
         response['signature'] = signature
@@ -77,11 +74,12 @@ def verify():
     form = forms.VerificationForm(test)
     response = {}
     if form.validate():
-        variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data, 'signature': form.signature.data}
-        transformed = RSA._hex_to_int(**variables)
+        variables = data['form']
+        task = tasks.transform.delay(**variables)
+        transformed = task.wait()
         transformed['message'] = form.message.data
-        verified = RSA.verify(**transformed)
-        response['verified'] = verified
+        task_verify = tasks.verify.delay(**transformed)
+        response = task_verify.wait()
     return jsonify(response)
 
 
@@ -92,14 +90,13 @@ def send():
     form = forms.SendKeyForm(test)
     response = {}
     if form.validate():
-        parameters = {'modulus': data['userStuff']['modulus'],
-                      'exponent': data['userStuff']['exponent'],
-                      'secret': data['userStuff']['secret']}
-        keys = RSA._hex_to_int(**parameters)
+        parameters = data['userStuff']
+        task = tasks.transform.delay(**parameters)
+        keys = task.wait()
         rsa = RSA(**keys)
 
-        variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data}
-        transformed = RSA._hex_to_int(**variables)
+        task = tasks.transform.delay(**data['form'])
+        transformed = task.wait()
         key, signature = rsa.send_key(**transformed)
         response['key'] = key
         response['signature'] = signature
@@ -113,15 +110,15 @@ def receive():
     form = forms.ReceiveKeyForm(test)
     response = {}
     if form.validate():
-        parameters = {'modulus': data['userStuff']['modulus'],
-                      'exponent': data['userStuff']['exponent'],
-                      'secret': data['userStuff']['secret']}
-        keys = RSA._hex_to_int(**parameters)
+        parameters = data['userStuff']
+        task = tasks.transform.delay(**parameters)
+        keys = task.wait()
         rsa = RSA(**keys)
 
         variables = {'modulus': form.modulus.data, 'exponent': form.exponent.data}
-        transformed = RSA._hex_to_int(**variables)
-        key, signature = rsa.send_key(**transformed)
+        task = tasks.transform.delay(**variables)
+        transformed = task.wait()
+        key, signature = rsa.receive_key(**transformed)
         response['key'] = key
         response['signature'] = signature
     return jsonify(response)
