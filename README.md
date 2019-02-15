@@ -12,14 +12,25 @@ In first version was released RSA encoding with Vue.js web interface
 ##### Requirements:
 * Python 3.6+
 * Node.js 
+* Redis
 * Postgres 
 * Linux
 
 
 Change configurations in init.sql and config.py and then run:
 
+Backend
+
 ```sh
 $ source ./setup.sh
+$ redis-server
+$ celery -A app.tasks worker --loglevel=info
+$ python run.py runserver
+```
+
+Frontend 
+
+```sh
 $ cd frontend 
 $ npm install
 $ npm run dev
@@ -35,6 +46,8 @@ $ npm run dev
 * Bootstrap 3
 * Postgres
 * SQLAlchemy
+* Celery
+* Redis
 
 ### Licence
 
