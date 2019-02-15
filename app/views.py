@@ -6,6 +6,7 @@ from app.rsa import RSA
 from app import forms
 from app.models import RSAKeys, Users
 from app.extensions import db
+from app.tasks import celery_generate
 
 
 class GenerateHandler(MethodView):
@@ -32,11 +33,11 @@ class GenerateHandler(MethodView):
                 modulus = result.module
                 exponent = result.public_exponent
             else:
-                rsa = RSA(length)
-                modulus = hex(rsa.modulus)[2:]
-                exponent = hex(rsa.exponent)[2:]
-                _secret = hex(rsa.secret)[2:]
-                keys = RSAKeys(key_size=length, module=modulus, public_exponent=exponent, secret=_secret, user_id=user)
+                task = celery_generate.delay(length)
+                rsa = task.wait()
+                modulus = rsa.get('module')
+                exponent = rsa.get('public_exponent')
+                keys = RSAKeys(key_size=length, user_id=user, **rsa)
                 db.session.add(keys)
                 db.session.commit()
             result = {'modulus': modulus, 'exponent': exponent}

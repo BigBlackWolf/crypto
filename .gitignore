@@ -4,7 +4,7 @@ migrations/
 __pycache__/
 venv/
 .idea/
-.DS_Store
+**/.DS_Store
 
 node_modules/
 npm-debug.log*

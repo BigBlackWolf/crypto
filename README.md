@@ -21,6 +21,7 @@ Change configurations in init.sql and config.py and then run:
 ```sh
 $ source ./setup.sh
 $ cd frontend 
+$ npm install
 $ npm run dev
 ```
 
