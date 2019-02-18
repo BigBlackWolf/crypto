@@ -8,7 +8,6 @@ import Signature from './components/Signature'
 import Verify from './components/Verify'
 import Send from './components/Send'
 import Receive from './components/Receive'
-import router from './router'
 
 Vue.config.productionTip = false
 

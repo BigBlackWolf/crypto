@@ -21,8 +21,23 @@ Change configurations in init.sql and config.py and then run:
 
 Backend
 
+* Python requirements:
 ```sh
-$ source ./setup.sh
+$ vitrualenv venv
+$ source venv/bin/activte
+$ pip install -r requirements.txt
+```
+
+* Postgres requirements (don't forget to change init.sql):
+```sh
+$ psql -U postgres postgres -f ./init.sql
+$ python run.py db init
+$ python run.py db migrate
+$ python run.py db upgrade
+```
+
+* Task runner requirements:
+```sh
 $ redis-server
 $ celery -A app.tasks worker --loglevel=info
 $ python run.py runserver
