@@ -15,7 +15,7 @@ before_script:
   - docker-compose up -d
 
 script:
-  - docker exec flask_crypto_server_1 nosetests
+  - docker exec crypto_server_1 nosetests
 
 after_script:
   - docker-compose down
