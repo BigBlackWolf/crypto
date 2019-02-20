@@ -1,12 +1,21 @@
 language: python
 python:
   - "3.6"
+
+services:
+  - docker
+
+before_install:
+  - docker-compose version
+
 install:
   - pip install -r requirements.txt
+
 before_script:
-  - celery -A app.tasks worker
+  - docker-compose up
+
 script:
   - nosetests
-services:
-  - redis-server
-  - postgresql
+
+after_script:
+  - docker-compose down
