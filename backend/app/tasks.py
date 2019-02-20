@@ -1,7 +1,7 @@
 from celery import Celery
 from app.rsa import RSA
 
-worker = Celery(__name__, broker='redis://localhost:6379', backend='redis://localhost:6379')
+worker = Celery(__name__, broker='amqp://ampq:5672', backend='amqp://ampq:5672')
 
 
 @worker.task(bind=True)

@@ -1,5 +1,5 @@
 import unittest
-from app import create_app
+from backend.app import create_app
 import json
 
 

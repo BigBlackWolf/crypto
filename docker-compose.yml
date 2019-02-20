@@ -1,0 +1,45 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_USER=crypto_user
+      - POSTGRES_PASSWORD=crypto_user
+  ampq:
+    image: rabbitmq:latest
+    expose:
+      - "5672"
+    ports:
+      - "5672:5672"
+  celery:
+    build: backend
+    command: celery -A app.tasks worker --loglevel=info
+    volumes:
+      - ./backend:/work
+    depends_on:
+      - ampq
+  server:
+    build: backend
+    volumes:
+      - ./backend:/work
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - ampq
+  frontend:
+    build: frontend
+    environment:
+    - HOST=0.0.0.0
+    volumes:
+    - ./frontend/src:/work/src
+    ports:
+    - "8080:8080"
+    depends_on:
+    - server

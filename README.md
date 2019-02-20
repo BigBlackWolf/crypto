@@ -9,6 +9,26 @@ In first version was released RSA encoding with Vue.js web interface
 
 ### Installation
 
+#### Easy way: 
+
+##### Requirements:
+* Docker
+* Docker-compose
+
+```bash
+$ docker-compose up
+```
+
+To init database:
+```bash
+$ docker exec flask_crypto_db_1 /bin/sh -c "psql -U crypto_user -f docker-entrypoint-initdb.d/init.sql"
+$ docker exec flask_crypto_server_1 /bin/sh -c "flask db migrate && flask db upgrade"
+# Optional to init user
+$ docker exec flask_crypto_db_1 /bin/sh -c "psql -U crypto_user aiohttp_crypto -c "INSERT INTO users(cookie) VALUES ('test');""
+```
+
+#### Long way:
+
 ##### Requirements:
 * Python 3.6+
 * Node.js 

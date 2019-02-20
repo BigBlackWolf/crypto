@@ -69,7 +69,7 @@
         this.getRandom(payload);
       },
       getRandom(data) {
-        const path = 'http://127.0.0.1:5000/api/send';
+        const path = 'http://0.0.0.0:5000/api/send';
         axios.post(path, data)
           .then(response => {
             this.sign_key = response.data.key;

@@ -5,7 +5,7 @@ import logging
 from app.rsa import RSA
 from app import forms
 from app.models import RSAKeys, Users
-from app.extensions import db
+from app import db
 
 
 class GenerateHandler(MethodView):
