@@ -12,7 +12,7 @@ install:
   - pip install -r backend/requirements.txt
 
 before_script:
-  - docker-compose up
+  - docker-compose up -d
 
 script:
   - nosetests
