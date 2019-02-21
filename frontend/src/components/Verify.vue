@@ -1,45 +1,21 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <form @submit="onSubmit">
+      <form id="form">
         <button class="btn btn-default" type="reset">
           <span class="glyphicon glyphicon-remove-circle"></span> Clear
         </button>
-        <div class="form-group">
+        <div v-for="field in fields" class="form-group">
           <div class="row">
-            <label class="col-sm-2 control-label"><label for="exponent">Signature</label></label>
+            <label class="col-sm-2 control-label">{{ field }}</label>
             <div class="col-sm-10">
-              <input class="form-control" type="text" id="signature" name="exponent" v-model="signature">
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="row">
-            <label class="col-sm-2 control-label"><label for="exponent">Modulus</label></label>
-            <div class="col-sm-10">
-              <input class="form-control" type="text" id="modulus" name="modulus" v-model="modulus">
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="row">
-            <label class="col-sm-2 control-label"><label for="exponent">Exponent</label></label>
-            <div class="col-sm-10">
-              <input class="form-control" type="text" id="exponent" name="exponent" v-model="exponent">
-            </div>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="row">
-            <label class="col-sm-2 control-label"><label for="message">Message</label></label>
-            <div class="col-sm-10">
-              <input class="form-control" type="text" id="message" name="message" v-model="message">
+              <input class="form-control" type="text" :name="field" required>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-2 col-sm-offset-2">
-            <input class="btn btn-success form-control" value="Verify" @click="onSubmit">
+            <input class="btn btn-success form-control" value="Generate" @click="onSubmit">
           </div>
         </div>
       </form>
@@ -54,29 +30,28 @@
   </div>
 </template>
 
+<style>
+  label {
+    text-transform: capitalize;
+  }
+</style>
+
 <script>
   import axios from 'axios'
 
   export default {
+    props: ['fields'],
     data() {
       return {
         verified: null,
-        modulus: null,
-        exponent: null
       }
     },
     methods: {
       onSubmit(evt) {
+        const formData = new FormData(document.getElementById('form'));
+        console.log(formData);
         evt.preventDefault();
-        const payload = {
-          form: {
-            message: this.message,
-            modulus: this.modulus,
-            exponent: this.exponent,
-            signature: this.signature
-          }
-        };
-        this.getRandom(payload);
+        this.getRandom(formData);
       },
       getRandom(data) {
         const path = 'http://0.0.0.0:5000/api/verify';

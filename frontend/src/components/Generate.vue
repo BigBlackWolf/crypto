@@ -1,15 +1,15 @@
 <template>
   <div class="panel panel-default">
     <div class="panel-body">
-      <form>
+      <form id="form">
         <button class="btn btn-default" type="reset">
           <span class="glyphicon glyphicon-remove-circle"></span> Clear
         </button>
-        <div class="form-group">
+        <div v-for="field in fields" class="form-group">
           <div class="row">
-            <label class="col-sm-2 control-label">Length</label>
+            <label class="col-sm-2 control-label">{{ field }}</label>
             <div class="col-sm-10">
-              <input class="form-control" v-model="length" type="text" id="length" name="length" required>
+              <input class="form-control" type="text" :name="field" required>
             </div>
           </div>
         </div>
@@ -34,26 +34,28 @@
   </div>
 </template>
 
+<style>
+  label {
+    text-transform: capitalize;
+  }
+</style>
+
 <script>
   import axios from 'axios'
 
   export default {
+    props: ['fields'],
     data() {
       return {
         modulus: null,
-        exponent: null,
-        length: null
+        exponent: null
       }
     },
     methods: {
       onSubmit(evt) {
+        const formData = new FormData(document.getElementById('form'));
         evt.preventDefault();
-        const payload = {
-          form: {
-            length: this.length
-          }
-        };
-        this.getRandom(payload);
+        this.getRandom(formData);
       },
       getRandom(data) {
         const path = 'http://0.0.0.0:5000/api/generate';
@@ -70,7 +72,7 @@
           })
       }
     },
-    mounted () {
+    mounted() {
       if (sessionStorage.modulus) {
         this.modulus = sessionStorage.modulus;
         this.exponent = sessionStorage.exponent;

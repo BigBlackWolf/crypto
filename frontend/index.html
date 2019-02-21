@@ -13,36 +13,7 @@
   }
 </style>
 <body>
-<nav class="navbar navbar-inverse lead">
-  <div class="container">
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="/">RSA<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Cesar</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="container">
-  <h2 id="test">Crypto</h2>
-</div>
-<div class="container" id="menu">
-  <div class="col-xs-2">
-    <ul class="nav nav-pills nav-stacked" role="tablist">
-      <li class="nav-item" v-for="tab in tabs" v-on:click="currentTab = tab">
-        <a href="#" role="tab" v-bind:class="['nav-link', { active: currentTab === tab }]">{{ tab }}</a>
-      </li>
-    </ul>
-  </div>
-  <div class="col-xs-9 col-xs-offset-1">
-    <component v-bind:is="currentTabComponent" class="tab"></component>
-  </div>
-</div>
+<div id="app"></div>
 <footer class="footer navbar-fixed-bottom">
   <div class="container-fluid text-center">
     <p class="text-muted">Created by Stepan Rasputny © 2019</p>

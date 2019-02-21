@@ -11,9 +11,7 @@ API = Blueprint('api', __name__)
 
 @API.route('/api/generate', methods=['POST'])
 def generate():
-    data = request.get_json()
-    test = ImmutableMultiDict(data.get('form').items())
-    form = forms.GenerateKeyForm(test)
+    form = forms.GenerateKeyForm(request.form)
     response = {}
     if form.validate():
         length = form.length.data
@@ -24,9 +22,7 @@ def generate():
 
 @API.route('/api/encrypt', methods=['POST'])
 def encrypt():
-    data = request.get_json()
-    test = ImmutableMultiDict(data.get('form').items())
-    form = forms.EncryptForm(test)
+    form = forms.EncryptForm(request.form)
     response = {}
     if form.validate():
         task = tasks.transform.delay(exponent=form.exponent.data, modulus=form.modulus.data)
@@ -70,12 +66,12 @@ def sign():
 
 @API.route('/api/verify', methods=['POST'])
 def verify():
-    data = request.get_json()
-    test = ImmutableMultiDict(data.get('form').items())
-    form = forms.VerificationForm(test)
+    form = forms.VerificationForm(request.form)
     response = {}
     if form.validate():
-        variables = data['form']
+        variables = {'modulus': form.modulus.data,
+                     'exponent': form.exponent.data,
+                     'signature': form.signature.data}
         task = tasks.transform.delay(**variables)
         transformed = task.wait()
         transformed['message'] = form.message.data
