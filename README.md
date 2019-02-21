@@ -16,7 +16,7 @@ Change configurations in config.py and then run:
 * Docker-compose
 
 ```bash
-$ docker-compose up
+$ docker-compose up -d
 ```
 
 To sync database:
@@ -25,15 +25,6 @@ $ docker exec crypto_server_1 /bin/sh -c "flask db migrate && flask db upgrade"
 # Optional to init user
 $ docker exec crypto_db_1 /bin/sh -c "psql -U crypto_user aiohttp_crypto -c "INSERT INTO users(cookie) VALUES ('test');""
 ```
-
-#### Long way:
-
-##### Requirements:
-* Python 3.6+
-* Node.js 
-* Redis
-* Postgres 
-* Linux
 
 
 ### Tech stack
