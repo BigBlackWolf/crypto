@@ -21,9 +21,9 @@ $ docker-compose up
 
 To sync database:
 ```bash
-$ docker exec flask_crypto_server_1 /bin/sh -c "flask db migrate && flask db upgrade"
+$ docker exec crypto_server_1 /bin/sh -c "flask db migrate && flask db upgrade"
 # Optional to init user
-$ docker exec flask_crypto_db_1 /bin/sh -c "psql -U crypto_user aiohttp_crypto -c "INSERT INTO users(cookie) VALUES ('test');""
+$ docker exec crypto_db_1 /bin/sh -c "psql -U crypto_user aiohttp_crypto -c "INSERT INTO users(cookie) VALUES ('test');""
 ```
 
 #### Long way:
