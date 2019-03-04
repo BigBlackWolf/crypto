@@ -1,9 +1,9 @@
 from werkzeug.datastructures import ImmutableMultiDict
 from flask import jsonify, request, Blueprint
 
-from app import forms
+from rsa import forms
 from app import tasks
-from app.rsa import RSA
+from rsa.rsa import RSA
 
 
 API = Blueprint('api', __name__)

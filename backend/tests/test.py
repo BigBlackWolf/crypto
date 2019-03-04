@@ -1,6 +1,6 @@
 import unittest
+from werkzeug.datastructures import ImmutableMultiDict
 from app import create_app
-import json
 
 
 class AppTest(unittest.TestCase):
@@ -11,13 +11,9 @@ class AppTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_index(self):
-        response = self.app.get('/')
-        self.assertEqual(response.status_code, 200)
-
     def test_generate(self):
-        response = self.app.post('/api/generate', data=json.dumps(dict(form=dict(length=64))),
-                                 content_type='application/json')
+        data = ImmutableMultiDict({'length': 64})
+        response = self.app.post('/api/generate', data=data)
         self.assertEqual(response.status_code, 200)
 
 

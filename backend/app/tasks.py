@@ -1,5 +1,5 @@
 from celery import Celery
-from app.rsa import RSA
+from rsa.rsa import RSA
 
 worker = Celery(__name__, broker='amqp://ampq:5672', backend='amqp://ampq:5672')
 

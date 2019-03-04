@@ -2,7 +2,6 @@ from flask import Flask
 
 from app.extensions import db, migrate, cors
 from app.routes import setup_routes
-from app.models import RSAKeys
 
 
 def create_app():
