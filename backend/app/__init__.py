@@ -10,5 +10,9 @@ def create_app():
     setup_routes(app)
     db.init_app(app)
     migrate.init_app(app, db)
-    cors.init_app(app, resources={r'/api/*': {'origins': '*'}})
+    cors.init_app(app, resources={
+        r'/rsa/api/*': {'origins': '*'},
+        r'/cesar/api/*': {'origins': '*'},
+        r'/vigenere/api/*': {'origins': '*'},
+    })
     return app
