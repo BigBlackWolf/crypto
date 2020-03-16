@@ -6,7 +6,7 @@ from app import tasks
 from rsa.rsa import RSA
 
 
-API = Blueprint('api', __name__)
+API = Blueprint('api', __name__, url_prefix='/rsa')
 
 
 @API.route('/api/generate', methods=['POST'])

@@ -54,7 +54,7 @@
         this.getRandom(formData);
       },
       getRandom(data) {
-        const path = 'http://0.0.0.0:5000/api/verify';
+        const path = 'http://0.0.0.0:5000/rsa/api/verify';
         axios.post(path, data)
           .then(response => {
             this.verified = response.data.verified;

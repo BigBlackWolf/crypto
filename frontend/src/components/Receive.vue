@@ -87,7 +87,7 @@
         this.getRandom(payload);
       },
       getRandom(data) {
-        const path = 'http://0.0.0.0:5000/api/receive';
+        const path = 'http://0.0.0.0:5000/rsa/api/receive';
         axios.post(path, data)
           .then(response => {
             this.key2 = response.data.key;

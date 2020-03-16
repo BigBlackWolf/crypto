@@ -55,7 +55,7 @@
         this.getRandom(payload);
       },
       getRandom(data) {
-        const path = 'http://0.0.0.0:5000/api/decrypt';
+        const path = 'http://0.0.0.0:5000/rsa/api/decrypt';
         axios.post(path, data)
           .then(response => {
             this.decrypted = response.data.decrypted;

@@ -55,7 +55,7 @@
         this.getRandom(payload);
       },
       getRandom(data) {
-        const path = 'http://0.0.0.0:5000/api/sign';
+        const path = 'http://0.0.0.0:5000/rsa/api/sign';
         axios.post(path, data)
           .then(response => {
             this.signature = response.data.signature;

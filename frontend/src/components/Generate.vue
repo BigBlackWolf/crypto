@@ -58,7 +58,7 @@
         this.getRandom(formData);
       },
       getRandom(data) {
-        const path = 'http://0.0.0.0:5000/api/generate';
+        const path = 'http://0.0.0.0:5000/rsa/api/generate';
         axios.post(path, data)
           .then(response => {
             this.modulus = response.data.modulus;
