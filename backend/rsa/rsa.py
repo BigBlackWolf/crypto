@@ -1,6 +1,11 @@
 import random
 import binascii
+import ctypes
 from functools import reduce
+
+gen_lib = ctypes.CDLL("./gen_lib.so")
+gen_lib.gcd.restype = ctypes.c_uint64
+gen_lib.gcd.argtypes = [ctypes.c_uint64, ctypes.c_uint64]
 
 
 class RSA:
@@ -122,14 +127,7 @@ class RSA:
     @staticmethod
     def _gcd(a: int, b: int) -> int:
         """Greatest common division of two numbers."""
-        if a < 0:
-            a = abs(a)
-        while a and b != 0:
-            if a > b:
-                a -= b
-            else:
-                b -= a
-        return a if a != 0 else b
+        return gen_lib.gcd(a, b)
 
     @staticmethod
     def _pascal(n: int, limit: int=128) -> bool:
